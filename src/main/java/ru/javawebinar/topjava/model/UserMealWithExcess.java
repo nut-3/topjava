@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.model;
 
 import java.time.LocalDateTime;
 
-public class UserMealWithExcess {
+public class UserMealWithExcess implements Meals {
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -16,6 +16,8 @@ public class UserMealWithExcess {
         this.description = description;
         this.calories = calories;
         this.excess = excess;
+        if (!ALL_MEALS.contains(dateTime))
+            DAILY_CALORIES.put(dateTime.toLocalDate(), DAILY_CALORIES.getOrDefault(dateTime.toLocalDate(), 0) + calories);
     }
 
     @Override
@@ -26,5 +28,25 @@ public class UserMealWithExcess {
                 ", calories=" + calories +
                 ", excess=" + excess +
                 '}';
+    }
+
+    @Override
+    public LocalDateTime getDateTime() {
+        return this.dateTime;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
+
+    @Override
+    public int getCalories() {
+        return this.calories;
+    }
+
+    @Override
+    public int getDailyCalories() {
+        return DAILY_CALORIES.get(this.getDateTime().toLocalDate());
     }
 }
