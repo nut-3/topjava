@@ -43,9 +43,7 @@ public class UserMealsUtil {
                     mealDate,
                     dailyCalories.getOrDefault(mealDate, 0) + userMeal.getCalories());
 
-            if (!dailyExcess.containsKey(mealDate)) {
-                dailyExcess.put(mealDate, new AtomicBoolean());
-            }
+            dailyExcess.putIfAbsent(mealDate, new AtomicBoolean());
 
             dailyExcess.get(mealDate).set(dailyCalories.get(mealDate) > caloriesPerDay);
 
