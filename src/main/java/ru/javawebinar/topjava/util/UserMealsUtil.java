@@ -62,18 +62,17 @@ public class UserMealsUtil {
 
         meals.forEach(userMeal -> {
             LocalDate mealDate = userMeal.getDateTime().toLocalDate();
-            dailyCalories.computeIfAbsent(mealDate, (t) -> new DailyCalories())
-            .increaseCalories(userMeal.getCalories())
+            DailyCalories currDailyCalories = dailyCalories.computeIfAbsent(mealDate, localDate -> new DailyCalories());
+            currDailyCalories.increaseCalories(userMeal.getCalories())
                     .getExcess()
-                    .set(dailyCalories.get(mealDate).getCalories() > caloriesPerDay);
-
+                    .set(currDailyCalories.getCalories() > caloriesPerDay);
 
             if (TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
                 userMealWithExcesses.add(new UserMealWithExcess(
                         userMeal.getDateTime(),
                         userMeal.getDescription(),
                         userMeal.getCalories(),
-                        dailyCalories.get(mealDate).getExcess()));
+                        currDailyCalories.getExcess()));
             }
         });
         return userMealWithExcesses;
@@ -85,11 +84,15 @@ public class UserMealsUtil {
                         HashMap::new,
                         (HashMap<LocalDate, ArrayList<UserMeal>> userMeals, UserMeal userMeal) -> {
                             LocalDate mealDate = userMeal.getDateTime().toLocalDate();
-                            userMeals.computeIfAbsent(mealDate, (t) -> new ArrayList<>()).add(userMeal);
+                            userMeals.computeIfAbsent(mealDate, localDate -> new ArrayList<>()).add(userMeal);
                         },
                         (HashMap<LocalDate, ArrayList<UserMeal>> dailyMeals1,
                          HashMap<LocalDate, ArrayList<UserMeal>> dailyMeals2) -> {
-                            dailyMeals2.forEach((localDate, userMeals) -> dailyMeals1.get(localDate).addAll(userMeals));
+                            dailyMeals2.forEach((localDate, userMeals) -> dailyMeals1.merge(localDate, userMeals,
+                                    (list1, list2) -> {
+                                        list1.addAll(list2);
+                                        return list1;
+                                    }));
                             return dailyMeals1;
                         },
                         (HashMap<LocalDate, ArrayList<UserMeal>> dailyMeals) -> {
@@ -97,15 +100,14 @@ public class UserMealsUtil {
 
                             dailyMeals.forEach((localDate, userMeals) -> {
                                 AtomicBoolean dailyExcess = new AtomicBoolean();
-                                dailyExcess.set(userMeals.stream().mapToInt(userMeal -> {
+                                dailyExcess.set(userMeals.stream().peek(userMeal -> {
                                     if (TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
                                         userMealsWithExcesses.add(new UserMealWithExcess(userMeal.getDateTime(),
                                                 userMeal.getDescription(),
                                                 userMeal.getCalories(),
                                                 dailyExcess));
                                     }
-                                    return userMeal.getCalories();
-                                }).sum() > caloriesPerDay);
+                                }).mapToInt(UserMeal::getCalories).sum() > caloriesPerDay);
                             });
                             return userMealsWithExcesses;
                         }
