@@ -86,8 +86,7 @@ public class UserMealsUtil {
                             LocalDate mealDate = userMeal.getDateTime().toLocalDate();
                             userMeals.computeIfAbsent(mealDate, localDate -> new ArrayList<>()).add(userMeal);
                         },
-                        (HashMap<LocalDate, ArrayList<UserMeal>> dailyMeals1,
-                         HashMap<LocalDate, ArrayList<UserMeal>> dailyMeals2) -> {
+                        (dailyMeals1, dailyMeals2) -> {
                             dailyMeals2.forEach((localDate, userMeals) -> dailyMeals1.merge(localDate, userMeals,
                                     (list1, list2) -> {
                                         list1.addAll(list2);
@@ -95,7 +94,7 @@ public class UserMealsUtil {
                                     }));
                             return dailyMeals1;
                         },
-                        (HashMap<LocalDate, ArrayList<UserMeal>> dailyMeals) -> {
+                        dailyMeals -> {
                             List<UserMealWithExcess> userMealsWithExcesses = new ArrayList<>();
 
                             dailyMeals.forEach((localDate, userMeals) -> {
