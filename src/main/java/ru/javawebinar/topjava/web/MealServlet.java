@@ -25,6 +25,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        log.debug("redirect to meals");
         List<Meal> meals = Arrays.asList(
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
@@ -36,10 +37,8 @@ public class MealServlet extends HttpServlet {
         );
 
         List<MealTo> mealsTo = MealsUtil.transformMeals(meals, 2000);
-        log.debug("redirect to meals");
 
         req.setAttribute("meals", mealsTo);
         req.getRequestDispatcher("meals.jsp").forward(req, resp);
-//        resp.sendRedirect("meals.jsp");
     }
 }
