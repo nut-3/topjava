@@ -1,7 +1,10 @@
 package ru.javawebinar.topjava.model;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class MealTo {
     private final LocalDateTime dateTime;
 
