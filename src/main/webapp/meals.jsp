@@ -13,22 +13,43 @@
     <h3><a href="index.html">Home</a></h3>
     <hr>
     <h2>Meals</h2>
+    <form action="" method="post">
+        <input hidden name="id" value="">
+        <button class="button float-left" style="background-color: green; border-color: green" name="buttonPress"
+                value="mealEdit">Добавить
+        </button>
+    </form>
     <table>
+        <thead>
+        <tr>
+            <th>Дата/Время</th>
+            <th>Описание</th>
+            <th>Калории</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
         <c:forEach var="meal" items="${requestScope.meals}">
-            <tr style="color:
-            <c:choose>
-            <c:when test="${meal.excess==true}">
-                    red
-            </c:when>
-            <c:otherwise>
-                    green
-            </c:otherwise>
-                    </c:choose>">
-                <td><c:out value="${meal.dateTime.format(DateTimeFormatter.ofPattern(\"d-M-y H:m\"))}"/></td>
+            <tr style="color:<c:out value="${meal.excess ? \"red\" : \"green\"}"/>">
+                <td><c:out value="${meal.dateTime.format(DateTimeFormatter.ofPattern(\"y-MM-dd HH:mm\"))}"/></td>
                 <td><c:out value="${meal.description}"/></td>
                 <td><c:out value="${meal.calories}"/></td>
+                <td>
+                    <form action="" method="post">
+                        <input hidden name="id" value="<c:out value="${meal.id}"/>">
+                        <button class="button float-right" style="background-color: blue; border-color: blue" name="buttonPress" value="mealEdit">Изменить</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="" method="post">
+                        <input hidden name="id" value="<c:out value="${meal.id}"/>">
+                        <button class="button float-right" style="background-color: red; border-color: red" name="buttonPress" value="mealDelete">Удалить</button>
+                    </form>
+                </td>
             </tr>
         </c:forEach>
+        </tbody>
     </table>
 </div>
 </body>
