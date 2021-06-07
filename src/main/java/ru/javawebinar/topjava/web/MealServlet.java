@@ -28,10 +28,11 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
     private static GenericDao<Meal> dao;
 
+    @SuppressWarnings("unchecked")
     @Override
     public void init() {
         try {
-            dao = (GenericDao<Meal>) PropUtil.getDao();
+            dao = (GenericDao<Meal>) PropUtil.getDao("Meal");
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
