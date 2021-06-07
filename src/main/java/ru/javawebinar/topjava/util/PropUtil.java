@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.util;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.dao.GenericDao;
-import ru.javawebinar.topjava.model.Meal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +35,12 @@ public class PropUtil {
         throw new NoSuchElementException(property);
     }
 
-    public static GenericDao<?> getDao(String T) throws ClassNotFoundException, IOException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        return (GenericDao<?>) Class.forName("ru.javawebinar.topjava.dao." + getProperty("db.driver" + T)).getConstructors()[0].newInstance();
+    @SuppressWarnings("unchecked")
+    public static <T> GenericDao<T> getDao(Class<T> typeOfT) throws ClassNotFoundException, IOException,
+            InvocationTargetException, InstantiationException, IllegalAccessException {
+        return (GenericDao<T>) Class.forName("ru.javawebinar.topjava.dao." + getProperty("db.driver." + typeOfT.getSimpleName()))
+                .getConstructors()[0]
+                .newInstance();
     }
 
 }
