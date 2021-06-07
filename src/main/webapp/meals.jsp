@@ -32,7 +32,7 @@
         <tbody>
         <c:forEach var="meal" items="${requestScope.meals}">
             <tr style="color:<c:out value="${meal.excess ? \"red\" : \"green\"}"/>">
-                <td><c:out value="${meal.dateTime.format(TimeUtil.formatter)}"/></td>
+                <td><c:out value="${meal.dateTime.format(TimeUtil.JSP_FORMATTER)}"/></td>
                 <td><c:out value="${meal.description}"/></td>
                 <td><c:out value="${meal.calories}"/></td>
                 <td>

@@ -85,12 +85,12 @@ public class MealServlet extends HttpServlet {
             case "editMealSubmit":
                 log.debug(operation + " on meal.id=" + idVal);
                 if (idVal.equals("")) {
-                    dao.add(new Meal(LocalDateTime.parse(req.getParameter("dateTime"), TimeUtil.getFormatter()),
+                    dao.add(new Meal(LocalDateTime.parse(req.getParameter("dateTime"), TimeUtil.CLASS_FORMATTER),
                             req.getParameter("description"),
                             Integer.parseInt(req.getParameter("calories") != null ? req.getParameter("calories") : "0")));
                 } else {
                     dao.update(new Meal(Integer.parseInt(idVal),
-                            LocalDateTime.parse(req.getParameter("dateTime"), TimeUtil.getFormatter()),
+                            LocalDateTime.parse(req.getParameter("dateTime"), TimeUtil.CLASS_FORMATTER),
                             req.getParameter("description"),
                             Integer.parseInt(req.getParameter("calories") != null ? req.getParameter("calories") : "0")));
                 }
