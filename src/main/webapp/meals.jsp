@@ -13,10 +13,8 @@
     <h3><a href="index.html">Home</a></h3>
     <hr>
     <h2>Meals</h2>
-    <form action="" method="post">
-        <input hidden name="id" value="">
-        <button class="button float-left" style="background-color: green; border-color: green" name="buttonPress"
-                value="mealEdit">Добавить
+    <form action="" method="get">
+        <button class="button float-left" style="background-color: green; border-color: green" name="edit">Добавить
         </button>
     </form>
     <table>
@@ -31,20 +29,23 @@
         </thead>
         <tbody>
         <c:forEach var="meal" items="${requestScope.meals}">
-            <tr style="color:<c:out value="${meal.excess ? \"red\" : \"green\"}"/>">
-                <td><c:out value="${meal.dateTime.format(TimeUtil.JSP_FORMATTER)}"/></td>
-                <td><c:out value="${meal.description}"/></td>
-                <td><c:out value="${meal.calories}"/></td>
+            <tr style="${meal.excess ? 'color: red' : 'color: green'}">
+                <td>${meal.dateTime.format(TimeUtil.JSP_FORMATTER)}</td>
+                <td>${meal.description}</td>
+                <td>${meal.calories}</td>
                 <td>
-                    <form action="" method="post">
-                        <input hidden name="id" value="<c:out value="${meal.id}"/>">
-                        <button class="button float-right" style="background-color: blue; border-color: blue" name="buttonPress" value="mealEdit">Изменить</button>
+                    <form action="" method="get">
+                        <button class="button float-right" style="background-color: blue; border-color: blue"
+                                name="edit" value="${meal.id}">Изменить
+                        </button>
                     </form>
                 </td>
                 <td>
                     <form action="" method="post">
-                        <input hidden name="id" value="<c:out value="${meal.id}"/>">
-                        <button class="button float-right" style="background-color: red; border-color: red" name="buttonPress" value="mealDelete">Удалить</button>
+                        <input hidden name="id" value="${meal.id}">
+                        <button class="button float-right" style="background-color: red; border-color: red"
+                                name="button" value="delete">Удалить
+                        </button>
                     </form>
                 </td>
             </tr>
