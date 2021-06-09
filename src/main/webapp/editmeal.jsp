@@ -19,7 +19,7 @@
         <label for="calories">Калории</label>
         <input type="number" id="calories" name="calories" value="${requestScope.meal.calories}"/>
         <div class="float-right">
-            <button class="button-outline" style="color: green; border-color: green" name="cancel" formmethod="get">
+            <button class="button-outline" style="color: green; border-color: green" name="action" value="cancel" formmethod="get">
                 Отменить
             </button>
             <button class="button" style="background-color: green; border-color: green" name="button"

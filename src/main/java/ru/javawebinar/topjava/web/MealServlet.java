@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -35,33 +36,29 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         req.setCharacterEncoding("UTF-8");
 
-        String operation = getActionName(req);
-        String idVal = getRequestParamValue(operation, req);
+        String operation = Optional.ofNullable(req.getParameter("action")).orElse("");
 
         switch (operation) {
             case "cancel":
-                log.debug("redirect to " + LIST_REDIRECT);
+                log.debug("redirect to {}", LIST_REDIRECT);
                 resp.sendRedirect(LIST_REDIRECT);
                 break;
+            case "new":
             case "edit":
-                if (!idVal.equals("")) {
+                String idVal = req.getParameter("id");
+                try {
                     int id = Integer.parseInt(idVal);
-                    Meal meal;
-                    Optional<Meal> optMeal = dao.getById(id);
-                    if (optMeal.isPresent()) {
-                        meal = optMeal.get();
-                        req.setAttribute("meal", meal);
-                    }
-                }
+                    dao.getById(id).ifPresent(meal -> req.setAttribute("meal", meal));
+                } catch (NumberFormatException ignored) { }
 
-                log.debug("forward to " + NEW_EDIT_FORWARD);
+                log.debug("forward to {}", NEW_EDIT_FORWARD);
                 req.getRequestDispatcher(NEW_EDIT_FORWARD).forward(req, resp);
                 break;
             default:
                 List<MealTo> mealsTo = MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000);
                 req.setAttribute("meals", mealsTo);
 
-                log.debug("forward to " + LIST_FORWARD);
+                log.debug("forward to {}", LIST_FORWARD);
 
                 req.getRequestDispatcher(LIST_FORWARD).forward(req, resp);
                 break;
@@ -72,55 +69,36 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
 
-        String operation = getRequestParamValue("button", req);
-        String idVal = getRequestParamValue("id", req);
+        String operation = Optional.ofNullable(req.getParameter("button")).orElse("");
+        String idVal = req.getParameter("id");
 
-        log.debug(operation + " on " + (idVal.equals("") ? "new meal" : "meal.id=" + idVal));
+        log.debug("operation {} on {}", operation, (idVal.equals("") ? "new meal" : "meal.id=" + idVal));
 
         switch (operation) {
             case "delete":
-                int id = Integer.parseInt(idVal);
-                dao.delete(id);
+                try {
+                    int id = Integer.parseInt(idVal);
+                    dao.delete(id);
+                } catch (NumberFormatException e) {
+                    log.debug("wrong id value {}", idVal);
+                    e.printStackTrace();
+                }
                 resp.sendRedirect(LIST_REDIRECT);
                 break;
             case "save":
-                LocalDateTime dateTime = LocalDateTime.parse(getRequestParamValue("dateTime", req), TimeUtil.CLASS_FORMATTER);
-                String description = getRequestParamValue("description", req);
-                int calories = Integer.parseInt(getRequestParamValue("calories", req));
+                LocalDateTime dateTime = LocalDateTime.parse(req.getParameter("dateTime"), TimeUtil.CLASS_FORMATTER);
+                String description = req.getParameter("description");
+                int calories = Integer.parseInt(Optional.ofNullable(req.getParameter("calories")).orElse("0"));
 
-                if (idVal.equals("")) {
-                    dao.add(new Meal(dateTime, description, calories));
-                } else {
-                    id = Integer.parseInt(idVal);
+                try {
+                    int id = Integer.parseInt(idVal);
                     dao.update(new Meal(id, dateTime, description, calories));
+                } catch (NumberFormatException e) {
+                    dao.add(new Meal(dateTime, description, calories));
                 }
 
                 resp.sendRedirect(LIST_REDIRECT);
                 break;
         }
-    }
-
-    private String getActionName(HttpServletRequest req) {
-        List<String> actionList = Arrays.asList("edit", "cancel");
-
-        Enumeration<String> reqParams = req.getParameterNames();
-        while (reqParams.hasMoreElements()) {
-            String action = reqParams.nextElement();
-            if (actionList.contains(action))
-                return action;
-        }
-        return "";
-    }
-
-    private String getRequestParamValue(String paramName, HttpServletRequest req) {
-        Enumeration<String> reqParams = req.getParameterNames();
-
-        while (reqParams.hasMoreElements()) {
-            if (Objects.equals(reqParams.nextElement(), paramName)) {
-                String param = req.getParameter(paramName);
-                return (param != null ? param : "");
-            }
-        }
-        return "";
     }
 }

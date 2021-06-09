@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface Dao<T> {
     T add(T item);
 
-    void delete(int mealId);
+    boolean delete(int id);
 
     T update(T item);
 

@@ -14,7 +14,8 @@
     <hr>
     <h2>Meals</h2>
     <form action="" method="get">
-        <button class="button float-left" style="background-color: green; border-color: green" name="edit">Добавить
+        <button class="button float-left" style="background-color: green; border-color: green" name="action"
+                value="new">Добавить
         </button>
     </form>
     <table>
@@ -29,23 +30,24 @@
         </thead>
         <tbody>
         <c:forEach var="meal" items="${requestScope.meals}">
-            <tr style="${meal.excess ? 'color: red' : 'color: green'}">
+            <tr style="color: ${meal.excess ? 'red' : 'green'}">
                 <td>${meal.dateTime.format(TimeUtil.JSP_FORMATTER)}</td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
                 <td>
                     <form action="" method="get">
                         <button class="button float-right" style="background-color: blue; border-color: blue"
-                                name="edit" value="${meal.id}">Изменить
+                                name="action" value="edit">Изменить
                         </button>
+                        <input hidden name="id" value="${meal.id}">
                     </form>
                 </td>
                 <td>
                     <form action="" method="post">
-                        <input hidden name="id" value="${meal.id}">
                         <button class="button float-right" style="background-color: red; border-color: red"
                                 name="button" value="delete">Удалить
                         </button>
+                        <input hidden name="id" value="${meal.id}">
                     </form>
                 </td>
             </tr>
