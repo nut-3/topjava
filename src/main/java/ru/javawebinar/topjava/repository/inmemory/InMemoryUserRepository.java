@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.AbstractNamedEntity;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.exception.DuplicateEmailException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +30,9 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User save(User user) {
         log.info("save {}", user);
+        if (repository.values().stream().anyMatch(existingUser -> existingUser.getEmail().equals(user.getEmail()))) {
+            throw new DuplicateEmailException("User with email " + user.getEmail() + " already exists!");
+        }
         if (user.isNew()) {
             user.setId(counter.incrementAndGet());
             repository.put(user.getId(), user);
