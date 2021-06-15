@@ -41,4 +41,14 @@ public class Meal extends AbstractBaseEntity {
     public LocalTime getTime() {
         return dateTime.toLocalTime();
     }
+
+    @Override
+    public String toString() {
+        return "Meal{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                '}';
+    }
 }
