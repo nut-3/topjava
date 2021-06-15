@@ -40,4 +40,8 @@ public class ValidationUtil {
             throw new IllegalArgumentException(entity + " must be with id=" + id);
         }
     }
+
+    public static boolean isEmpty(String input) {
+        return (input == null || input.equals(""));
+    }
 }

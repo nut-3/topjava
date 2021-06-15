@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.isEmpty;
+
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -19,17 +21,13 @@ public class DateTimeUtil {
     }
 
     public static LocalTime parseTime(String input) {
-        if (checkInput(input)) return null;
+        if (isEmpty(input)) return null;
         return LocalTime.parse(input, TIME_FORMATTER);
     }
 
     public static LocalDate parseDate(String input) {
-        if (checkInput(input)) return null;
+        if (isEmpty(input)) return null;
         return LocalDate.parse(input, DATE_FORMATTER);
-    }
-
-    private static boolean checkInput(String input) {
-        return (input == null || input.equals(""));
     }
 }
 

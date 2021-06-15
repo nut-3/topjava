@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -13,11 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseDate;
@@ -43,38 +39,20 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
-        String action = request.getParameter("action");
 
-        if ("filter".equals(action)) {
-            log.info("getFilteredTos");
-            Map<String, String> filter = new HashMap<>();
-            filter.put("startDate", request.getParameter("startDate"));
-            filter.put("endDate", request.getParameter("endDate"));
-            filter.put("startTime", request.getParameter("startTime"));
-            filter.put("endTime", request.getParameter("endTime"));
+        String id = request.getParameter("id");
 
-            request.setAttribute("meals",
-                    mealRestController.getFilteredTos(parseDate(filter.get("startDate")),
-                            parseDate(filter.get("endDate")),
-                            parseTime(filter.get("startTime")),
-                            parseTime(filter.get("endTime"))));
-            request.setAttribute("filter", filter);
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-        } else {
-            String id = request.getParameter("id");
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories")));
 
-            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                    LocalDateTime.parse(request.getParameter("dateTime")),
-                    request.getParameter("description"),
-                    Integer.parseInt(request.getParameter("calories")));
-
-            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-            if (meal.isNew()) {
-                mealRestController.create(meal);
-            } else
-                mealRestController.update(meal, meal.getId());
-            response.sendRedirect("meals");
-        }
+        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        if (meal.isNew()) {
+            mealRestController.create(meal);
+        } else
+            mealRestController.update(meal, meal.getId());
+        response.sendRedirect("meals");
     }
 
     @Override
@@ -82,6 +60,20 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         switch (action == null ? "all" : action) {
+            case "filter":
+                log.info("getFiltered");
+                String startDate = request.getParameter("startDate");
+                String endDate = request.getParameter("endDate");
+                String startTime = request.getParameter("startTime");
+                String endTime = request.getParameter("endTime");
+
+                request.setAttribute("meals",
+                        mealRestController.getFiltered(parseDate(startDate),
+                                parseDate(endDate),
+                                parseTime(startTime),
+                                parseTime(endTime)));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
             case "delete":
                 int id = getId(request);
                 log.info("Delete {}", id);
@@ -99,12 +91,8 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                String userId = request.getParameter("user");
-                if (userId != null && !userId.isEmpty()) {
-                    SecurityUtil.setUserId(Integer.parseInt(userId));
-                }
                 request.setAttribute("meals",
-                        mealRestController.getTos());
+                        mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

@@ -8,15 +8,17 @@
 <hr>
 <label for="user">Choose role:</label>
 <br>
-<form action="meals" method="get">
+<form action="users" method="post">
     <select name="user" id="user">
         <option value="1" >Admin</option>
         <option value="2">User</option>
     </select>
+    <button type="submit">Login</button>
+</form>
     <ul style="font-size: large">
         <li><a href="users">Users</a></li>
-        <li><button type="submit">Meals</button></li>
+        <li><a href="meals">Meals</a></li>
     </ul>
-</form>
+
 </body>
 </html>

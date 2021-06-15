@@ -9,8 +9,8 @@ import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,24 +23,20 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> this.save(meal, 1));
+        MealsUtil.meals1.forEach(meal -> this.save(meal, 1));
+        MealsUtil.meals2.forEach(meal -> this.save(meal, 2));
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
-        Map<Integer, Meal> userMeal = computeUserMeals(userId);
+        log.info("save meal {} for user {}", meal.getId(), userId);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            userMeal.put(meal.getId(), meal);
+            computeUserMeals(userId).put(meal.getId(), meal);
             return meal;
         }
-        if (repository.entrySet().stream()
-                .anyMatch(integerMapEntry -> integerMapEntry.getValue().containsKey(meal.getId()) &&
-                        !integerMapEntry.getKey().equals(userId))) {
-            return null;
-        }
         // handle case: update, but not present in storage
-        return userMeal.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return computeUserMeals(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
@@ -52,22 +48,23 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
+        log.info("get meal {} from user {}", id, userId);
         return computeUserMeals(userId)
                 .get(id);
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
-        return computeUserMeals(userId)
-                .values()
-                .stream()
+    public List<Meal> getAll(int userId) {
+        log.info("get all meals from user {}", userId);
+        return computeUserMeals(userId).values().stream()
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId) {
-        return computeUserMeals(userId).values().stream()
+    public List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId) {
+        log.info("get filtered meals from user {}", userId);
+        return getAll(userId).stream()
                 .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
                         startDate != null ? startDate : LocalDate.MIN,
                         endDate != null ? endDate.plusDays(1) : LocalDate.MAX))

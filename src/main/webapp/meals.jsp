@@ -21,25 +21,25 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
-    <form method="post">
+    <form method="get">
         <table border="1" cellpadding="8" cellspacing="0">
             <tr>
                 <td>
                     <label for="startDate">От даты (включая)</label>
-                    <input type="date" name="startDate" id="startDate" value="${filter.startDate}">
+                    <input type="date" name="startDate" id="startDate" value="${param.startDate}">
                 </td>
                 <td>
                     <label for="endDate">До даты (включая)</label>
-                    <input type="date" name="endDate" id="endDate" value="${filter.endDate}">
+                    <input type="date" name="endDate" id="endDate" value="${param.endDate}">
                 </td>
                 <td></td>
                 <td>
                     <label for="startTime">От времени (включая)</label>
-                    <input type="time" name="startTime" id="startTime" value="${filter.startTime}">
+                    <input type="time" name="startTime" id="startTime" value="${param.startTime}">
                 </td>
                 <td>
                     <label for="endTime">До времени (исключая)</label>
-                    <input type="time" name="endTime" id="endTime" value="${filter.endTime}">
+                    <input type="time" name="endTime" id="endTime" value="${param.endTime}">
                 </td>
             </tr>
         </table>
