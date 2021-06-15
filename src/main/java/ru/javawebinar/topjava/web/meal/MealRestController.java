@@ -57,7 +57,9 @@ public class MealRestController {
 
     public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         log.info("getFiltered");
-        return MealsUtil.getFilteredTos(service.getFiltered(startDate, endDate, authUserId()),
+        return MealsUtil.getFilteredTos(service.getFiltered(startDate != null ? startDate : LocalDate.MIN,
+                endDate != null ? endDate.plusDays(1) : LocalDate.MAX,
+                authUserId()),
                 authUserCaloriesPerDay(),
                 startTime != null ? startTime : LocalTime.MIN,
                 endTime != null ? endTime : LocalTime.MAX);

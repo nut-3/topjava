@@ -57,18 +57,15 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
         log.info("get all meals from user {}", userId);
-        return computeUserMeals(userId).values().stream()
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                .collect(Collectors.toList());
+        return getFiltered(LocalDate.MIN, LocalDate.MAX, userId);
     }
 
     @Override
     public List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId) {
         log.info("get filtered meals from user {}", userId);
-        return getAll(userId).stream()
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
-                        startDate != null ? startDate : LocalDate.MIN,
-                        endDate != null ? endDate.plusDays(1) : LocalDate.MAX))
+        return computeUserMeals(userId).values().stream()
+                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), startDate, endDate))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
