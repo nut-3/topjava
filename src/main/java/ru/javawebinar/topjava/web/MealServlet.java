@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import static ru.javawebinar.topjava.util.DateTimeUtil.parseDate;
-import static ru.javawebinar.topjava.util.DateTimeUtil.parseTime;
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseDateIso;
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseTimeIso;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
@@ -68,10 +68,10 @@ public class MealServlet extends HttpServlet {
                 String endTime = request.getParameter("endTime");
 
                 request.setAttribute("meals",
-                        mealRestController.getFiltered(parseDate(startDate),
-                                parseDate(endDate),
-                                parseTime(startTime),
-                                parseTime(endTime)));
+                        mealRestController.getFiltered(parseDateIso(startDate),
+                                parseDateIso(endDate),
+                                parseTimeIso(startTime),
+                                parseTimeIso(endTime)));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "delete":
