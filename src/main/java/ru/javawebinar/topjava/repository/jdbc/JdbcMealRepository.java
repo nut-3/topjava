@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,13 +55,13 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     public boolean delete(int id, int userId) {
         return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?",
-                new Object[]{id, userId}, new int[]{Types.INTEGER, Types.INTEGER}) == 1;
+                id, userId) == 1;
     }
 
     @Override
     public Meal get(int id, int userId) {
         List<Meal> mealList = jdbcTemplate.query("SELECT id, date_time, description, calories" +
-                        " FROM meals where id=? and user_id=?",
+                        " FROM meals WHERE id=? AND user_id=?",
                 ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(mealList);
     }
@@ -70,14 +69,14 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
         return jdbcTemplate.query("SELECT id, date_time, description, calories" +
-                        " FROM meals where user_id=? ORDER BY date_time DESC",
+                        " FROM meals WHERE user_id=? ORDER BY date_time DESC",
                 ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return jdbcTemplate.query("SELECT id, date_time, description, calories" +
-                        " FROM meals WHERE user_id=? AND date_time >= ?::timestamp AND date_time < ?::timestamp ORDER BY date_time DESC",
+                        " FROM meals WHERE user_id=? AND date_time >= ? AND date_time < ? ORDER BY date_time DESC",
                 ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 }

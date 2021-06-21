@@ -18,6 +18,9 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
+
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -47,6 +50,11 @@ public class MealServiceTest {
     }
 
     @Test
+    public void getWrongUser() {
+        assertThrows(NotFoundException.class, () -> service.get(ADMIN_LUNCH_ID, USER_ID));
+    }
+
+    @Test
     public void delete() {
         service.delete(ADMIN_LUNCH_ID, ADMIN_ID);
         assertThrows(NotFoundException.class, () -> service.get(ADMIN_LUNCH_ID, ADMIN_ID));
@@ -63,9 +71,18 @@ public class MealServiceTest {
     }
 
     @Test
-    public void getBetweenInclusive() {
-        LocalDate endDateTime = LocalDate.of(2020, Month.JANUARY, 30);
-        assertMatch(service.getBetweenInclusive(null, endDateTime, USER_ID), getUserFilteredMeals());
+    public void getBetweenInclusiveStartEnd() {
+        LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 31);
+        LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
+        assertMatch(service.getBetweenInclusive(startDate, endDate, USER_ID),
+                getSortedListOf(userMealBorder31, userMealBreakfast31, userMealLunch31, userMealDinner31));
+    }
+
+    @Test
+    public void getBetweenInclusiveEnd() {
+        LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 30);
+        assertMatch(service.getBetweenInclusive(null, endDate, USER_ID),
+                getSortedListOf(userMealBreakfast30, userMealLunch30, userMealDinner30));
     }
 
     @Test
