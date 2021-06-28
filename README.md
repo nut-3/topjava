@@ -1,5 +1,5 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/837d5211d9cf46faa62a219310f606b4)](https://www.codacy.com/gh/nut-3/topjava/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nut-3/topjava&amp;utm_campaign=Badge_Grade)
-
+[![Build Status](https://travis-ci.com/nut-3/topjava.svg?branch=HW4)](https://travis-ci.com/nut-3/topjava)
 
 Java Enterprise Online Project 
 ===============================
