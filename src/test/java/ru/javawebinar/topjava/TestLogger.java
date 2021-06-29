@@ -21,17 +21,21 @@ public class TestLogger {
 
     private static final Map<Description, Long> testsData = new HashMap<>();
 
-    public static Stopwatch methodRule = new Stopwatch() {
+    public static final Stopwatch INDIVIDUAL = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            log.info(DELIMITER);
-            log.info(logInfo(description, nanos, TEST_LOG_STRING));
-            log.info(DELIMITER);
+            String output = '\n' +
+                    DELIMITER +
+                    '\n' +
+                    logInfo(description, nanos, TEST_LOG_STRING) +
+                    '\n' +
+                    DELIMITER;
+            log.info(output);
             testsData.put(description, nanos);
         }
     };
 
-    public static ExternalResource classRule = new ExternalResource() {
+    public static final ExternalResource SUMMARY = new ExternalResource() {
         @Override
         protected void after() {
             StringBuilder output = new StringBuilder()
