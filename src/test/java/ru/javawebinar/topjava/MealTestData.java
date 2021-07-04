@@ -7,10 +7,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
+import static ru.javawebinar.topjava.UserTestData.admin;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
+import static ru.javawebinar.topjava.UserTestData.user;
 
 public class MealTestData {
     public static final MatcherFactory<Meal> MATCHER = MatcherFactory.usingIgnoringFieldsComparator("user");
+    public static final MatcherFactory<Meal> MATCHER_USER = MatcherFactory.usingIgnoringFieldsComparator("user.meals", "user.registered", "user.roles");
 
     public static final int NOT_FOUND = 10;
     public static final int MEAL1_ID = START_SEQ + 2;
@@ -34,5 +37,17 @@ public class MealTestData {
 
     public static Meal getUpdated() {
         return new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный завтрак", 200);
+    }
+
+    public static Meal getMealWithUser() {
+        Meal meal = new Meal(meal1);
+        meal.setUser(user);
+        return meal;
+    }
+
+    public static Meal getMealWithWrongUser() {
+        Meal meal = new Meal(meal2);
+        meal.setUser(admin);
+        return meal;
     }
 }
