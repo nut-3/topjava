@@ -58,13 +58,6 @@
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
     </beans>
-    <beans profile="jpa">
-        <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
-    </beans>
-    <beans profile="datajpa">
-        <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
-        <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
-    </beans>
     <beans profile="datajpa,jpa">
         <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
               p:dataSource-ref="dataSource"
@@ -93,5 +86,12 @@
         <!-- Transaction manager for a single JPA EntityManagerFactory (alternative to JTA) -->
         <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
               p:entityManagerFactory-ref="entityManagerFactory"/>
+    </beans>
+    <beans profile="jpa">
+        <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
+    </beans>
+    <beans profile="datajpa">
+        <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
+        <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
     </beans>
 </beans>

@@ -34,8 +34,8 @@ public abstract class AbstractServiceTest {
     @ClassRule
     public static ExternalResource externalResource = TestLogger.SUMMARY;
 
-    void clearCache(String name) {
-        Cache cache = cacheManager.getCache(name);
+    public void clearCache() {
+        Cache cache = cacheManager.getCache("users");
         if (cache != null) {
             cache.clear();
         }
