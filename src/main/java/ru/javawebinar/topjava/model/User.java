@@ -58,7 +58,7 @@ public class User extends AbstractNamedEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OrderBy("dateTime DESC")
-    private List<Meal> meals = new CopyOnWriteArrayList<>();
+    private List<Meal> meals;
 
     public User() {
     }
@@ -135,25 +135,7 @@ public class User extends AbstractNamedEntity {
     }
 
     public void setMeals(Collection<Meal> meals) {
-        this.meals.clear();
-        if (!CollectionUtils.isEmpty(meals)) {
-            this.meals.addAll(meals);
-            meals.forEach(meal -> {
-                if (meal.getUser() != this) {
-                    meal.setUser(this);
-                }
-            });
-        }
-    }
-
-    public void addMeal(Meal meal) {
-        if (this.meals == null) {
-            this.meals = Collections.emptyList();
-        }
-        this.meals.add(meal);
-        if (meal.getUser() == null) {
-            meal.setUser(this);
-        }
+        this.meals = CollectionUtils.isEmpty(meals) ? Collections.emptyList() : List.copyOf(meals);
     }
 
     @Override

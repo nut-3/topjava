@@ -8,6 +8,8 @@ import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 
+import java.util.Collections;
+
 import static ru.javawebinar.topjava.UserTestData.*;
 
 
@@ -29,6 +31,6 @@ public class DataJpaUserServiceTest extends AbstractUserServiceTest {
         userToCompare.setId(userId);
         User user = service.getWithMeals(userId);
         MATCHER.assertMatch(user, userToCompare);
-        MealTestData.MATCHER.assertMatch(user.getMeals(), userToCompare.getMeals());
+        MealTestData.MATCHER.assertMatch(user.getMeals(), Collections.emptyList());
     }
 }

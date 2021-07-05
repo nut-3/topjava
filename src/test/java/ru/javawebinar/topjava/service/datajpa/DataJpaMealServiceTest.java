@@ -14,11 +14,6 @@ import static ru.javawebinar.topjava.MealTestData.MATCHER;
 @ActiveProfiles(Profiles.DATAJPA)
 public class DataJpaMealServiceTest extends AbstractMealServiceTest {
 
-    @Before
-    public void setup() {
-        clearCache();
-    }
-
     @Test
     public void getWithUser() {
         Meal mealToCompare = MealTestData.getWithUser();

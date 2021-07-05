@@ -25,19 +25,9 @@ import ru.javawebinar.topjava.TestLogger;
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractServiceTest {
 
-    @Autowired
-    private CacheManager cacheManager;
-
     @Rule
     public Stopwatch stopwatch = TestLogger.INDIVIDUAL;
 
     @ClassRule
     public static ExternalResource externalResource = TestLogger.SUMMARY;
-
-    public void clearCache() {
-        Cache cache = cacheManager.getCache("users");
-        if (cache != null) {
-            cache.clear();
-        }
-    }
 }
