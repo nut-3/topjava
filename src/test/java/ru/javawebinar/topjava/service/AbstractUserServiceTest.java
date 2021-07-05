@@ -28,33 +28,14 @@ import java.util.List;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"
-})
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public abstract class AbstractUserServiceTest {
+public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Autowired
     UserService service;
 
-    @Autowired
-    private CacheManager cacheManager;
-
-    @Rule
-    public Stopwatch stopwatch = TestLogger.INDIVIDUAL;
-
-    @ClassRule
-    public static ExternalResource externalResource = TestLogger.SUMMARY;
-
     @Before
     public void setup() {
-        Cache userCache = cacheManager.getCache("users");
-        if (userCache != null) {
-            userCache.clear();
-        }
+        clearCache("users");
     }
 
     @Test
