@@ -8,8 +8,7 @@ import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 
-import java.util.Collections;
-
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 
@@ -31,6 +30,6 @@ public class DataJpaUserServiceTest extends AbstractUserServiceTest {
         userToCompare.setId(userId);
         User user = service.getWithMeals(userId);
         MATCHER.assertMatch(user, userToCompare);
-        MealTestData.MATCHER.assertMatch(user.getMeals(), Collections.emptyList());
+        assertThat(user.getMeals().isEmpty());
     }
 }
