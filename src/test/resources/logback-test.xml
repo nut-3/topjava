@@ -23,6 +23,8 @@
 
 <!--    <logger name="org.postgresql" level="debug"/>-->
 <!--    <logger name="org.springframework.jdbc" level="info"/>-->
+    <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="debug"/>
+    <logger name="org.springframework.jdbc.datasource.DataSourceTransactionManager" level="debug"/>
     <logger name="ru.javawebinar.topjava" level="debug"/>
 
     <root level="INFO">
