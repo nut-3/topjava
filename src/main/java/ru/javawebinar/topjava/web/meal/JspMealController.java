@@ -4,8 +4,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
@@ -17,58 +17,56 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 @Controller
+@RequestMapping(value = "/meals")
 public class JspMealController extends AbstractMealController {
 
     public JspMealController(MealService service) {
         super(service);
     }
 
-    @GetMapping("/meals")
+    @GetMapping("")
     public String getAll(Model model) {
         model.addAttribute("meals",
                 super.getAll());
         return "meals";
     }
 
-    @GetMapping("/meals/delete?id={id}")
-    public String deleteOne(@PathVariable(value = "id") int id) {
+    @GetMapping("/delete")
+    public String deleteOne(@RequestParam int id) {
         super.delete(id);
         return "redirect:/meals";
     }
 
-    @GetMapping({"/meals/update", "/meals/create"})
-    public String openEditForm(@RequestParam(required = false) Integer id, Model model) {
-        int userId = SecurityUtil.authUserId();
-        Meal meal;
-        if (id == null) {
-            log.info("openEditForm for create new meal");
-            meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
-        } else {
-            log.info("openEditForm for meal {}", id);
-            meal = service.get(id, userId);
-        }
+    @GetMapping("/create")
+    public String openCreateForm(Model model) {
+        Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         model.addAttribute("meal", meal);
         return "mealForm";
     }
 
-    @PostMapping("/meals")
-    public String save(@RequestParam("dateTime")
+    @GetMapping("/update")
+    public String openEditForm(@RequestParam Integer id, Model model) {
+        Meal meal = super.get(id);
+        model.addAttribute("meal", meal);
+        return "mealForm";
+    }
+
+    @PostMapping("")
+    public String save(@RequestParam
                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
-                       @RequestParam("description") String description,
-                       @RequestParam("calories") int calories,
-                       @RequestParam(name = "id", required = false) Integer id) {
-        int userId = SecurityUtil.authUserId();
+                       @RequestParam String description,
+                       @RequestParam int calories,
+                       @RequestParam(required = false) Integer id) {
         Meal meal = new Meal(dateTime, description, calories);
         if (id != null) {
-            meal.setId(id);
-            service.update(meal, userId);
+            super.update(meal, id);
         } else {
-            service.create(meal, userId);
+            super.create(meal);
         }
         return "redirect:/meals";
     }
 
-    @GetMapping("/meals/filter")
+    @GetMapping("/filter")
     public String filter(@RequestParam(required = false)
                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                          @RequestParam(required = false)

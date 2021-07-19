@@ -13,6 +13,9 @@ import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 public class ValidationUtil {
+
+    private final static ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
+
     private ValidationUtil() {
     }
 
@@ -59,8 +62,7 @@ public class ValidationUtil {
     }
 
     public static <T> void validateObject(T object) {
-        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-        Set<ConstraintViolation<T>> violations = validatorFactory.getValidator().validate(object);
+        Set<ConstraintViolation<T>> violations = VALIDATOR_FACTORY.getValidator().validate(object);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }

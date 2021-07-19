@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -23,26 +24,23 @@ import static ru.javawebinar.topjava.util.ValidationUtil.validateObject;
 @Transactional(readOnly = true)
 public class JdbcUserRepository implements UserRepository {
 
+    private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
+
     private static final ResultSetExtractor<List<User>> EXTRACTOR = rs -> {
-        Map<Integer, User> result = new HashMap<>();
+        Map<Integer, User> result = new LinkedHashMap<>();
         while (rs.next()) {
-            Integer userId = rs.getInt(rs.findColumn("id"));
-            User user = result.getOrDefault(userId, new User());
-            if (user.isNew()) {
-                user.setId(userId);
-                user.setName(rs.getString(rs.findColumn("name")));
-                user.setEmail(rs.getString(rs.findColumn("email")));
-                user.setPassword(rs.getString(rs.findColumn("password")));
-                user.setCaloriesPerDay(rs.getInt(rs.findColumn("calories_per_day")));
-                user.setEnabled(rs.getBoolean(rs.findColumn("enabled")));
-                user.setRegistered(new Date(rs.getTimestamp(rs.findColumn("registered")).getTime()));
-                result.put(userId, user);
-            }
-            Role role = Role.valueOf(rs.getString(rs.findColumn("role")));
-            if (user.getRoles() == null) {
-                user.setRoles(Set.of(role));
-            } else {
-                user.getRoles().add(role);
+            User user = ROW_MAPPER.mapRow(rs, rs.getRow());
+            if (user != null) {
+                String role = rs.getString("role");
+
+                if (!result.containsKey(user.getId())) {
+                    user.setRoles(role != null ? Set.of(Role.valueOf(role)) : null);
+                    result.put(user.getId(), user);
+                } else {
+                    if (role != null) {
+                        result.get(user.getId()).getRoles().add(Role.valueOf(role));
+                    }
+                }
             }
         }
         return new ArrayList<>(result.values());
@@ -92,26 +90,26 @@ public class JdbcUserRepository implements UserRepository {
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
                 """, parameterSourceUser) == 0) {
             return null;
-        } else if (!user.getRoles().isEmpty()) {
-            List<Object[]> arguments = new ArrayList<>();
-            Set<Role> currentRoles = get(user.id()).getRoles();
-            Set<Role> updateRoles = user.getRoles();
+        }
+        Set<Role> currentRoles = get(user.id()).getRoles();
+        Set<Role> updateRoles = user.getRoles();
 
-            Set<Role> differences = currentRoles.stream()
-                    .filter(role -> !updateRoles.contains(role))
-                    .collect(Collectors.toSet());
-            if (!differences.isEmpty()) {
-                differences.forEach(role -> arguments.add(new Object[]{user.id(), role.toString()}));
-                jdbcTemplate.batchUpdate("DELETE FROM user_roles where user_id=? AND role=?", arguments);
-            }
+        Set<Role> differences = currentRoles.stream()
+                .filter(role -> !updateRoles.contains(role))
+                .collect(Collectors.toSet());
+        List<Object[]> arguments = new ArrayList<>();
+        if (!differences.isEmpty()) {
+            differences.forEach(role -> arguments.add(new Object[]{user.id(), role.name()}));
+            jdbcTemplate.batchUpdate("DELETE FROM user_roles where user_id=? AND role=?", arguments);
+        }
 
-            differences = updateRoles.stream()
-                    .filter(role -> !currentRoles.contains(role))
-                    .collect(Collectors.toSet());
-            if (!differences.isEmpty()) {
-                differences.forEach(role -> arguments.add(new Object[]{user.id(), role.toString()}));
-                jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", arguments);
-            }
+        differences = updateRoles.stream()
+                .filter(role -> !currentRoles.contains(role))
+                .collect(Collectors.toSet());
+        arguments.clear();
+        if (!differences.isEmpty()) {
+            differences.forEach(role -> arguments.add(new Object[]{user.id(), role.name()}));
+            jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", arguments);
         }
         return user;
     }
@@ -127,7 +125,7 @@ public class JdbcUserRepository implements UserRepository {
         List<User> users = jdbcTemplate.query("""
                 SELECT u.id, u.email, u.name, u.password, u.enabled, u.calories_per_day,
                 u.registered, ur.role FROM users u LEFT OUTER JOIN user_roles ur
-                ON u.id = ur.user_id WHERE u.id=? ORDER BY u.id
+                ON u.id = ur.user_id WHERE u.id=?
                 """, EXTRACTOR, id);
         return DataAccessUtils.singleResult(users);
     }
@@ -138,7 +136,7 @@ public class JdbcUserRepository implements UserRepository {
         List<User> users = jdbcTemplate.query("""
                 SELECT u.id, u.email, u.name, u.password, u.enabled, u.calories_per_day,
                 u.registered, ur.role FROM users u LEFT JOIN user_roles ur
-                ON u.id = ur.user_id WHERE u.email=? ORDER BY u.id
+                ON u.id = ur.user_id WHERE u.email=?
                 """, EXTRACTOR, email);
         return DataAccessUtils.singleResult(users);
     }
@@ -148,7 +146,7 @@ public class JdbcUserRepository implements UserRepository {
         return jdbcTemplate.query("""
                 SELECT u.id, u.email, u.name, u.password, u.enabled, u.calories_per_day,
                 u.registered, ur.role FROM users u LEFT JOIN user_roles ur
-                ON u.id = ur.user_id ORDER BY u.name, u.email, u.id
+                ON u.id = ur.user_id ORDER BY u.name, u.email
                 """, EXTRACTOR);
     }
 }

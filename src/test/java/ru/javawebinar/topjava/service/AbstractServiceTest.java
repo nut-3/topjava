@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.service;
 
 import org.assertj.core.util.Arrays;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
@@ -49,9 +48,5 @@ public abstract class AbstractServiceTest {
                 throw getRootCause(e);
             }
         });
-    }
-
-    protected boolean isJdbc() {
-        return Arrays.asList(environment.getActiveProfiles()).contains(Profiles.JDBC);
     }
 }

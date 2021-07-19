@@ -25,20 +25,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     protected UserService service;
 
-    @Autowired
-    private CacheManager cacheManager;
-
     @Autowired(required = false)
     protected JpaUtil jpaUtil;
-
-    @Before
-    public void setup() {
-        // HW6 1.2
-//        if (isJdbc()) return;
-//        cacheManager.getCache("users").clear();
-//        jpaUtil.clear2ndLevelHibernateCache();
-
-    }
 
     @Test
     public void create() {
@@ -99,12 +87,27 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() throws Exception {
-        //HW6 1.2
-//        Assume.assumeFalse(isJdbc());
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of())));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Set.of())));
+    }
+
+    @Test
+    public void createWithoutRoles() {
+        User created = service.create(getNewWithoutRoles());
+        int newId = created.id();
+        User newUser = getNewWithoutRoles();
+        newUser.setId(newId);
+        MATCHER.assertMatch(created, newUser);
+        MATCHER.assertMatch(service.get(newId), newUser);
+    }
+
+    @Test
+    public void updateWithoutRoles() {
+        User updated = getUpdatedWithoutRoles();
+        service.update(updated);
+        MATCHER.assertMatch(service.get(USER_ID), getUpdatedWithoutRoles());
     }
 }

@@ -1,16 +1,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="ehCacheManager" class="org.springframework.cache.support.NoOpCacheManager"/>
 
-    <util:map id="hibernateSettings" map-class="java.util.Properties">
-        <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="${hibernate.format_sql}"/>
-        <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}" value="${hibernate.use_sql_comments}"/>
-        <entry key="#{T(org.hibernate.cfg.AvailableSettings).JPA_PROXY_COMPLIANCE}" value="false"/>
-        <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}" value="false"/>
-        <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_QUERY_CACHE}" value="false"/>
-    </util:map>
+    <beans profile="jpa,datajpa">
+        <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+            <property name="properties">
+                <map>
+                    <entry key="entityManagerFactory.jpaPropertyMap[#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}]"
+                           value="false"/>
+                </map>
+            </property>
+        </bean>
+    </beans>
 </beans>
