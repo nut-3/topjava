@@ -7,7 +7,7 @@
 
     <bean class="ru.javawebinar.topjava.web.json.JacksonObjectMapper" id="objectMapper" factory-method="getMapper"/>
 
-    <mvc:annotation-driven>
+    <mvc:annotation-driven conversion-service="conversionService">
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper" ref="objectMapper"/>
@@ -48,5 +48,16 @@
           p:defaultEncoding="UTF-8">
         <property name="basenames" value="file:///#{systemEnvironment[TOPJAVA_ROOT]}/config/messages/app"/>
         <property name="fallbackToSystemLocale" value="false"/>
+    </bean>
+
+    <!-- LocalDate/LocalTime converter -->
+    <bean id="conversionService"
+          class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="ru.javawebinar.topjava.util.LocalTimeConverter"/>
+                <bean class="ru.javawebinar.topjava.util.LocalDateConverter"/>
+            </set>
+        </property>
     </bean>
 </beans>

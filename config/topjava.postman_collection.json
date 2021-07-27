@@ -1,0 +1,448 @@
+{
+	"info": {
+		"_postman_id": "2b5e706b-4f12-4313-ad96-0beddb7d07e3",
+		"name": "topjava",
+		"description": "Topjava project REST API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "AdminGet",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/admin/users/{{user-id}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										"{{user-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AdminCreate",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"New2\",\r\n    \"email\": \"new2@yandex.ru\",\r\n    \"password\": \"passwordNew\",\r\n    \"roles\": [\r\n        \"USER\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/admin/users",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"admin",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AdminUpdate",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"UserUpdated\",\r\n    \"email\": \"user@yandex.ru\",\r\n    \"password\": \"passwordNew\",\r\n    \"roles\": [\r\n        \"USER\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/admin/users/{{user-id}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										"{{user-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AdminGetAll",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/admin/users",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"admin",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AdminDelete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/admin/users/{{user-id}}",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										"{{user-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetBy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/admin/users/by?email=admin@gmail.com",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										"by"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "admin@gmail.com"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AdminGetWithMeals",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/admin/users/{{admin-id}}/with-meals",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										"{{admin-id}}",
+										"with-meals"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Admin controller operations"
+				},
+				{
+					"name": "Profile",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/profile",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"New777\",\r\n    \"email\": \"new777@yandex.ru\",\r\n    \"password\": \"passwordNew\",\r\n    \"roles\": [\r\n        \"USER\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/profile",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/profile",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Text",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/profile/text",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"profile",
+										"text"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetWithMeals",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/profile/with-meals",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"profile",
+										"with-meals"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Profile controller operations"
+				}
+			],
+			"description": "users operations"
+		},
+		{
+			"name": "meals",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/meals",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"meals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/meals/{{meal1-id}}",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"meals",
+								"{{meal1-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dateTime\": \"2020-02-01T10:00:00\",\r\n    \"description\": \"Обновленный завтрак\",\r\n    \"calories\": 200\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/meals/{{meal1-id}}",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"meals",
+								"{{meal1-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dateTime\": \"2020-02-01T18:00:00\",\r\n    \"description\": \"Созданный ужин\",\r\n    \"calories\": 300\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/meals",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"meals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBetween",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/meals/filter?startDate=2020-01-30&startTime=11:00&endDate=2020-01-30&endTime=",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"meals",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2020-01-30"
+								},
+								{
+									"key": "startTime",
+									"value": "11:00"
+								},
+								{
+									"key": "endDate",
+									"value": "2020-01-30"
+								},
+								{
+									"key": "endTime",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "meals operations"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base",
+			"value": "http://localhost:8080/topjava/rest"
+		},
+		{
+			"key": "user-id",
+			"value": "100000"
+		},
+		{
+			"key": "meal1-id",
+			"value": "100002"
+		},
+		{
+			"key": "admin-id",
+			"value": "100001"
+		}
+	]
+}
