@@ -12,10 +12,7 @@ public final class LocalTimeConverter implements Converter<String, LocalTime> {
     @Nullable
     @Override
     public LocalTime convert(@Nullable String source) {
-        if (source == null || source.equals("")) {
-            return null;
-        }
-        return LocalTime.parse(source);
+        return DateTimeUtil.parseLocalTime(source);
     }
 
     @NonNull

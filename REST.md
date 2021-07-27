@@ -1,12 +1,12 @@
-# users operations
+# TopJava project REST API documentation
 ## Admin controller
 
-### GET AdminGet
+### Admin get user id=100000
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/admin/users/100000'
 ```
 
-### POST AdminCreate
+### Admin create new user
 ```shell
 curl --location --request POST 'http://localhost:8080/topjava/rest/admin/users' \
 --data-raw '{
@@ -19,7 +19,7 @@ curl --location --request POST 'http://localhost:8080/topjava/rest/admin/users' 
 }'
 ```
 
-### PUT AdminUpdate
+### Admin update user id=100000
 ```shell
 curl --location --request PUT 'http://localhost:8080/topjava/rest/admin/users/100000' \
 --data-raw '{
@@ -32,33 +32,34 @@ curl --location --request PUT 'http://localhost:8080/topjava/rest/admin/users/10
 }'
 ```
 
-### GET AdminGetAll
+### Admin get all users
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/admin/users'
 ```
 
-### DEL AdminDelete
+### Admin delete user id=100000
 ```shell
 curl --location --request DELETE 'http://localhost:8080/topjava/rest/admin/users/100000'
 ```
 
-### GET GetBy
+### Admin get user by email=admin@gmail.com
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/admin/users/by?email=admin@gmail.com'
 ```
 
-### GET AdminGetWithMeals
+### Admin get user with its meals
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/admin/users/100001/with-meals'
 ```
 
 ## Profile controller
-### GET Get
+
+### Get current user
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/topjava/rest/profile'
 ```
 
-### PUT Update
+### Update current user
 ```shell
 curl --location --request PUT 'http://localhost:8080/topjava/rest/profile' \
 --data-raw '{
@@ -71,33 +72,34 @@ curl --location --request PUT 'http://localhost:8080/topjava/rest/profile' \
 }'
 ```
 
-### DEL Delete
+### Delete current user 
 ```shell
 curl --location --request DELETE 'http://localhost:8080/topjava/rest/profile'
 ```
 
-### GET Text
+### Get UTF-8 text
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/profile/text'
 ```
 
-### GET GetWithMeals
+### Get current user with its meals
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/profile/with-meals'
 ```
 
 # meals operations
-### GET GetAll
+
+### Get all current user's meals
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/meals'
 ```
 
-### GET Get
+### Get current user's meal id=100002
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/meals/100002'
 ```
 
-### PUT Update
+### Update current user's meal id=100002
 ```shell
 curl --location --request PUT 'http://localhost:8080/topjava/rest/meals/100002' \
 --data-raw '{
@@ -107,7 +109,7 @@ curl --location --request PUT 'http://localhost:8080/topjava/rest/meals/100002' 
 }'
 ```
 
-### POST Create
+### Create new meal for current user
 ```shell
 curl --location --request POST 'http://localhost:8080/topjava/rest/meals' \
 --data-raw '{
@@ -117,7 +119,7 @@ curl --location --request POST 'http://localhost:8080/topjava/rest/meals' \
 }'
 ```
 
-### GET GetBetween
+### Get meals for current user filtered by dates ant time period 
 ```shell
 curl --location --request GET 'http://localhost:8080/topjava/rest/meals/filter?startDate=2020-01-30&startTime=11:00&endDate=2020-01-30&endTime=21:00'
 ```

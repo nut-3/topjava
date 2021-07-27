@@ -12,9 +12,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -86,16 +84,28 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 30);
-        LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 30);
-        LocalTime startTime = LocalTime.of(11, 0);
-        LocalTime endTime = LocalTime.of(21, 0);
-        List<MealTo> expected = MealsUtil.getFilteredTos(List.of(meal3, meal2, meal1), user.getCaloriesPerDay(), startTime, endTime);
+        List<MealTo> expected = MealsUtil.getFilteredTos(List.of(meal3, meal2, meal1),
+                user.getCaloriesPerDay(),
+                LocalTime.of(11, 0),
+                LocalTime.of(21, 0));
         perform(MockMvcRequestBuilders.get(REST_URL + "filter")
-                .param("startDate", startDate.toString())
-                .param("endDate", endDate.toString())
-                .param("startTime", startTime.toString())
-                .param("endTime", endTime.toString()))
+                .param("startDate", "2020-01-30")
+                .param("endDate", "2020-01-30")
+                .param("startTime", "11:00")
+                .param("endTime", "21:00"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(TO_MATCHER.contentJson(expected));
+    }
+
+    @Test
+    void getBetweenWithNulls() throws Exception {
+        List<MealTo> expected = MealsUtil.getFilteredTos(meals,
+                user.getCaloriesPerDay(),
+                null,
+                null);
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDate=&startTime"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

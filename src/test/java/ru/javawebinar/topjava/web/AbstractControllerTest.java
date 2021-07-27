@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.javawebinar.topjava.AllActiveProfileResolver;
+import ru.javawebinar.topjava.Profiles;
 
 import javax.annotation.PostConstruct;
 
@@ -47,5 +48,9 @@ public abstract class AbstractControllerTest {
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
+    }
+
+    public boolean isDataJpa() {
+        return webApplicationContext.getEnvironment().acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.DATAJPA));
     }
 }

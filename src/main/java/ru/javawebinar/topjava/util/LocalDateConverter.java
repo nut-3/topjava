@@ -11,10 +11,7 @@ public class LocalDateConverter implements Converter<String, LocalDate> {
     @Nullable
     @Override
     public LocalDate convert(@Nullable String source) {
-        if (source == null || source.equals("")) {
-            return null;
-        }
-        return LocalDate.parse(source);
+        return DateTimeUtil.parseLocalDate(source);
     }
 
     @NonNull
