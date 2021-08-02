@@ -100,7 +100,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
         User disabled = new User(user);
         disabled.setEnabled(false);
         perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID + "?enabled=false"))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MATCHER.contentJson(disabled));

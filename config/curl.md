@@ -29,5 +29,5 @@
 `curl -s -X PUT -d '{"dateTime":"2020-01-30T07:00", "description":"Updated breakfast", "calories":200}' -H 'Content-Type: application/json' http://localhost:8080/topjava/rest/profile/meals/100003 --user user@yandex.ru:password`
 
 #### enable/disable User 100000
-`curl --location --request GET 'http://localhost:8080/topjava/rest/admin/users/100000' 
+`curl --location --request PATCH 'http://localhost:8080/topjava/rest/admin/users/100000?enabled=false' 
 --user admin@gmail.com:admin`

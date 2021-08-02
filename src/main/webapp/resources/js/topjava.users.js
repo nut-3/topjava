@@ -3,13 +3,20 @@ const userAjaxUrl = "admin/users/";
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
     ajaxUrl: userAjaxUrl,
-    setEnabled: function (id) {
+    setEnabled: function (id, checkbox) {
+        let enabled = checkbox.prop("checked");
         $.ajax({
             type: "PATCH",
-            url: ctx.ajaxUrl + id + "?enabled=" + $("#" + id).find("input").first().is(":checked")
+            url: ctx.ajaxUrl + id + "?enabled=" + enabled
         }).done(function () {
-            updateTable();
-            successNoty("Saved");
+            if (enabled) {
+                $("#" + id).removeClass("inactive");
+            } else {
+                $("#" + id).addClass("inactive");
+            }
+            successNoty(enabled ? "Enabled" : "Disabled");
+        }).fail(function () {
+            $("#" + id).find("input").first().prop('checked', !enabled);
         });
     },
     updateTable: function () {

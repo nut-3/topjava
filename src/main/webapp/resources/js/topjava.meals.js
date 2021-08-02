@@ -1,25 +1,25 @@
-const userAjaxUrl = "ui/meals/";
+const mealAjaxUrl = "ui/meals/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: userAjaxUrl,
+    ajaxUrl: mealAjaxUrl,
     updateTable: function () {
-        let startDate = $("#startDate").val(),
-            endDate = $("#endDate").val(),
-            startTime = $("#startTime").val(),
-            endTime = $("#endTime").val();
-        if (startDate == null && endDate == null && startTime == null && endTime == null) {
+        let queryParams = {
+            startDate: $("#startDate").val() || "",
+            endDate: $("#endDate").val() || "",
+            startTime: $("#startTime").val() || "",
+            endTime: $("#endTime").val() || ""
+        };
+        if (Object.values(queryParams).join("") === "") {
             updateTable();
         } else {
-            $.post(ctx.ajaxUrl + "filter",
-                {
-                    "startDate": startDate,
-                    "endDate": endDate,
-                    "startTime": startTime,
-                    "endTime": endTime
-                },
+            let queryString = "?" + Object.entries(queryParams)
+                .filter(param => param[1] !== "")
+                .flatMap(param => param.join("="))
+                .join("&");
+            $.get(ctx.ajaxUrl + "filter" + queryString,
                 function (data) {
-                    ctx.datatableApi.clear().rows.add(data).draw();
+                    redrawTable(data);
                 });
         }
     }
@@ -57,7 +57,7 @@ $(function () {
             "order": [
                 [
                     0,
-                    "asc"
+                    "desc"
                 ]
             ],
             //https://stackoverflow.com/questions/14596270/jquery-datatable-add-id-to-tr-element-after-row-is-dynamically-added#14596338
@@ -83,9 +83,6 @@ $(function () {
 });
 
 function clearFilter() {
-    $("#startDate").val("");
-    $("#endDate").val("");
-    $("#startTime").val("");
-    $("#endTime").val("");
+    $("#filter")[0].reset();
     ctx.updateTable();
 }

@@ -92,6 +92,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         expected.setEnabled(false);
         User disabled = service.setEnabled(false, user.id());
         MATCHER.assertMatch(disabled, expected);
+        MATCHER.assertMatch(service.get(user.id()), expected);
+
+        User enabled = service.setEnabled(true, user.id());
+        expected.setEnabled(true);
+        MATCHER.assertMatch(enabled, expected);
+        MATCHER.assertMatch(service.get(user.id()), expected);
     }
 
     @Test

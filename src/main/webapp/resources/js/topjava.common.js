@@ -34,7 +34,7 @@ function deleteRow(id) {
 
 function updateTable() {
     $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        redrawTable(data);
     });
 }
 
@@ -77,4 +77,8 @@ function failNoty(jqXHR) {
         layout: "bottomRight"
     });
     failedNote.show()
+}
+
+function redrawTable(data) {
+    ctx.datatableApi.clear().rows.add(data).draw();
 }

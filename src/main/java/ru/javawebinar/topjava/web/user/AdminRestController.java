@@ -64,6 +64,6 @@ public class AdminRestController extends AbstractUserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<User> enable(@RequestParam boolean enabled, @PathVariable int id) {
-        return ResponseEntity.accepted().body(super.setEnabled(enabled, id));
+        return ResponseEntity.ok(super.setEnabled(enabled, id));
     }
 }

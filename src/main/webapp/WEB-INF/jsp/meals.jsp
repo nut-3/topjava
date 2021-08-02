@@ -38,11 +38,11 @@
             <div class="card-footer text-right">
                 <button class="btn btn-danger" onclick="clearFilter()">
                     <span class="fa fa-remove"></span>
-                    Отменить
+                    <spring:message code="common.cancel"/>
                 </button>
                 <button class="btn btn-primary" onclick="ctx.updateTable()">
                     <span class="fa fa-filter"></span>
-                    Отфильтровать
+                    <spring:message code="common.filter"/>
                 </button>
             </div>
         </div>
