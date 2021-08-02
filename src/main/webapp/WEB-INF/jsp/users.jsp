@@ -6,7 +6,6 @@
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
-<script src="resources/js/topjava.common.js" defer></script>
 <script src="resources/js/topjava.users.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
@@ -31,11 +30,12 @@
             </thead>
             <c:forEach items="${users}" var="user">
                 <jsp:useBean id="user" type="ru.javawebinar.topjava.model.User"/>
-                <tr id="${user.id}">
+                <tr id="${user.id}" <c:if test="${!user.enabled}">class="inactive"</c:if>>
                     <td><c:out value="${user.name}"/></td>
                     <td><a href="mailto:${user.email}">${user.email}</a></td>
                     <td>${user.roles}</td>
-                    <td><input type="checkbox" <c:if test="${user.enabled}">checked</c:if>/></td>
+                    <td><input type="checkbox" <c:if test="${user.enabled}">checked</c:if>
+                               onclick="ctx.setEnabled(${user.id})"/></td>
                     <td><fmt:formatDate value="${user.registered}" pattern="dd-MMMM-yyyy"/></td>
                     <td><a><span class="fa fa-pencil"></span></a></td>
                     <td><a class="delete"><span class="fa fa-remove"></span></a></td>
