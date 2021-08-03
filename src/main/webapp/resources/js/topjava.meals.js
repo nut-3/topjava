@@ -2,28 +2,24 @@ const mealAjaxUrl = "ui/meals/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: mealAjaxUrl,
-    updateTable: function () {
-        let queryParams = {
-            startDate: $("#startDate").val() || "",
-            endDate: $("#endDate").val() || "",
-            startTime: $("#startTime").val() || "",
-            endTime: $("#endTime").val() || ""
-        };
-        if (Object.values(queryParams).join("") === "") {
-            updateTable();
-        } else {
-            let queryString = "?" + Object.entries(queryParams)
-                .filter(param => param[1] !== "")
-                .flatMap(param => param.join("="))
-                .join("&");
-            $.get(ctx.ajaxUrl + "filter" + queryString,
-                function (data) {
-                    redrawTable(data);
-                });
+        ajaxUrl: mealAjaxUrl,
+        updateTable: function () {
+            let queryString = $("#filter").serialize();
+            if (queryString === "startDate=&endDate=&startTime=&endTime=") {
+                updateTable();
+            } else {
+                $.ajax({
+                    type: "GET",
+                    url: ctx.ajaxUrl + "filter",
+                    data: queryString
+                }).done(
+                    function (data) {
+                        redrawTable(data);
+                    });
+            }
         }
     }
-};
+;
 
 $(function () {
     //https://stackoverflow.com/a/18317523/2791349
@@ -62,7 +58,7 @@ $(function () {
             ],
             //https://stackoverflow.com/questions/14596270/jquery-datatable-add-id-to-tr-element-after-row-is-dynamically-added#14596338
             "fnCreatedRow": function (nRow, aData, iDataIndex) {
-                $(nRow).attr("id", aData["id"]).attr("data-mealexcess", aData["excess"]);
+                $(nRow).attr("id", aData["id"]).attr("data-meal-excess", aData["excess"]);
             }
         })
     );

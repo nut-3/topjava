@@ -16,7 +16,7 @@ const ctx = {
             }
             successNoty(enabled ? "Enabled" : "Disabled");
         }).fail(function () {
-            $("#" + id).find("input").first().prop('checked', !enabled);
+            $(checkbox).prop('checked', !enabled);
         });
     },
     updateTable: function () {

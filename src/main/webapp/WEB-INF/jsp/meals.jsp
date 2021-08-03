@@ -42,7 +42,7 @@
                 </button>
                 <button class="btn btn-primary" onclick="ctx.updateTable()">
                     <span class="fa fa-filter"></span>
-                    <spring:message code="common.filter"/>
+                    <spring:message code="meal.filter"/>
                 </button>
             </div>
         </div>
@@ -64,7 +64,7 @@
                 </thead>
                 <c:forEach items="${meals}" var="meal">
                     <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.to.MealTo"/>
-                    <tr data-mealExcess="${meal.excess}" id="${meal.id}">
+                    <tr data-meal-excess="${meal.excess}" id="${meal.id}">
                         <td>
                                 <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                                 <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>

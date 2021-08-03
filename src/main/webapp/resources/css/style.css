@@ -15,11 +15,11 @@ dd {
     vertical-align: top;
 }
 
-tr[data-mealExcess="false"] {
+tr[data-meal-excess="false"] {
     color: green;
 }
 
-tr[data-mealExcess="true"] {
+tr[data-meal-excess="true"] {
     color: red;
 }
 
