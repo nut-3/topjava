@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,6 +38,12 @@ public class MealService {
 
     public List<Meal> getAll(int userId) {
         return repository.getAll(userId);
+    }
+
+    public void update(MealTo mealTo, int userId) {
+        int mealId = mealTo.id();
+        Meal meal = get(mealId, userId);
+        checkNotFoundWithId(repository.save(MealsUtil.updateFromTo(meal, mealTo), userId), mealId);
     }
 
     public void update(Meal meal, int userId) {
