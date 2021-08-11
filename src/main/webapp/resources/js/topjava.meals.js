@@ -25,7 +25,7 @@ $.ajaxSetup({
                 if (this.hasOwnProperty("dateTime")) {
                     this.dateTime = this.dateTime.substring(0, 10) + " " + this.dateTime.substring(11, 16);
                 }
-            })
+            });
             return jsonObject;
         }
     }
@@ -42,13 +42,7 @@ $(function () {
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime",
-                    "render": function (date, type, row) {
-                        if (type === "display") {
-                            return date.substring(0, 10) + " " + date.substring(11, 16);
-                        }
-                        return date;
-                    }
+                    "data": "dateTime"
                 },
                 {
                     "data": "description"
@@ -79,15 +73,55 @@ $(function () {
             }
         })
     );
-    $("input.datepicker").datetimepicker({
+
+    //https://stackoverflow.com/a/18317523/2791349
+    let userLang = navigator.language || navigator.userLanguage;
+    userLang = userLang.split('-')[0];
+    $.datetimepicker.setLocale(userLang);
+
+    let startDate = $("#startDate");
+    let endDate = $("#endDate");
+    startDate.datetimepicker({
         timepicker: false,
         dayOfWeekStart: 1,
-        format: "Y-m-d"
+        format: "Y-m-d",
+        onShow: function (cdt) {
+            this.setOptions({
+                maxDate: endDate.val() ? endDate.val() : false
+            })
+        }
     });
-    $("input.timepicker").datetimepicker({
+    endDate.datetimepicker({
+        timepicker: false,
+        dayOfWeekStart: 1,
+        format: "Y-m-d",
+        onShow: function (cdt) {
+            this.setOptions({
+                minDate: startDate.val() ? startDate.val() : false
+            })
+        }
+    });
+    let startTime = $("#startTime");
+    let endTime = $("#endTime");
+    startTime.datetimepicker({
         datepicker: false,
         dayOfWeekStart: 1,
-        format: "H:i"
+        format: "H:i",
+        onShow: function (cdt) {
+            this.setOptions({
+                maxTime: endTime.val() ? endTime.val() : false
+            })
+        }
+    });
+    endTime.datetimepicker({
+        datepicker: false,
+        dayOfWeekStart: 1,
+        format: "H:i",
+        onShow: function (cdt) {
+            this.setOptions({
+                minTime: startTime.val() ? startTime.val() : false
+            })
+        }
     });
     $("input.datetimepicker").datetimepicker({
         dayOfWeekStart: 1,

@@ -32,7 +32,6 @@
             <set>
                 <bean class="ru.javawebinar.topjava.web.converter.DateTimeFormatters.LocalTimeFormatter"/>
                 <bean class="ru.javawebinar.topjava.web.converter.DateTimeFormatters.LocalDateFormatter"/>
-                <bean class="ru.javawebinar.topjava.web.converter.DateTimeFormatters.LocalDateTimeFormatter"/>
             </set>
         </property>
     </bean>
