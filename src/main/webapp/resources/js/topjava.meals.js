@@ -21,11 +21,13 @@ $.ajaxSetup({
     converters: {
         "text json": function (result) {
             let jsonObject = JSON.parse(result);
-            $(jsonObject).each(function () {
-                if (this.hasOwnProperty("dateTime")) {
-                    this.dateTime = this.dateTime.substring(0, 10) + " " + this.dateTime.substring(11, 16);
-                }
-            });
+            if (typeof jsonObject === 'object') {
+                $(jsonObject).each(function () {
+                    if (this.hasOwnProperty("dateTime")) {
+                        this.dateTime = this.dateTime.substring(0, 10) + " " + this.dateTime.substring(11, 16);
+                    }
+                });
+            }
             return jsonObject;
         }
     }
