@@ -14,6 +14,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @SpringJUnitConfig(locations = {"classpath:spring/inmemory.xml"})
 class InMemoryAdminRestControllerSpringTest {
 
+
     @Autowired
     private AdminRestController controller;
 

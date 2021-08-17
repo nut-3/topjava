@@ -30,6 +30,53 @@ public class UserTestData {
     public static final User user = new User(USER_ID, "User", "user@yandex.ru", "password", 2005, Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", 1900, Role.ADMIN, Role.USER);
 
+    public static final String updatedJsonWithErrorEmpty = """
+            {
+                "name": "",
+                "email": "",
+                "password": "",
+                "roles": []
+            }""";
+    public static final String updatedJsonWithErrorUnprocessed = """
+            {
+                "name": "UserUpdated",
+                "email": "user@yandex.ru",
+                "password": "passwordNew",
+                "roles":
+            }""";
+    public static final String updatedJsonWithErrorEmail = """
+            {
+                "name": "UserUpdated",
+                "email": "user_yandex.ru",
+                "password": "passwordNew",
+                "roles": [
+                    "USER"
+                ]
+            }""";
+    public static final String newJsonWithErrorEmpty = """
+            {
+                "name": "",
+                "email": "",
+                "password": "",
+                "roles": []
+            }""";
+    public static final String newJsonWithErrorUnprocessed = """
+            {
+                "name": "New2",
+                "email": "new2@yandex.ru",
+                "password": "passwordNew",
+                "roles":
+            }""";
+    public static final String newJsonWithErrorEmail = """
+            {
+                "name": "New2",
+                "email": "new2_yandex.ru",
+                "password": "passwordNew",
+                "roles": [
+                    "USER"
+                ]
+            }""";
+
     static {
         user.setMeals(meals);
         admin.setMeals(List.of(adminMeal2, adminMeal1));

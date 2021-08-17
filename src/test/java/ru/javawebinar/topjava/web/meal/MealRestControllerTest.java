@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -81,6 +82,43 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void updateWithError() throws Exception {
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(updatedJsonWithErrorDateTime))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("Text '2020-02-01 10:00:00' could not be parsed at index 10")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile/meals/100002")));
+
+
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(updatedJsonWithErrorEmpty))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("[description] must not be blank")))
+                .andExpect(content().string(containsString("[calories] must not be null")))
+                .andExpect(content().string(containsString("[description] size must be between 2 and 120")))
+                .andExpect(content().string(containsString("[dateTime] must not be null")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile/meals/100002")));
+
+
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(updatedJsonWithErrorUnprocessed))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("Unexpected character ('}'")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile/meals/100002")));
+
+        MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), meal1);
+    }
+
+    @Test
     void createWithLocation() throws Exception {
         Meal newMeal = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -93,6 +131,42 @@ class MealRestControllerTest extends AbstractControllerTest {
         newMeal.setId(newId);
         MATCHER.assertMatch(created, newMeal);
         MATCHER.assertMatch(mealService.get(newId, USER_ID), newMeal);
+    }
+
+    @Test
+    void createWithLocationError() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(newJsonWithErrorDateTime))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().string(containsString("Text '2020-02-01 18:00:00' could not be parsed at index 10")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile/meals/")));
+
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(newJsonWithErrorEmpty))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("[description] must not be blank")))
+                .andExpect(content().string(containsString("[calories] must not be null")))
+                .andExpect(content().string(containsString("[description] size must be between 2 and 120")))
+                .andExpect(content().string(containsString("[dateTime] must not be null")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile/meals/")));
+
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(newJsonWithErrorUnprocessed))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("Unexpected character ('}'")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile/meals/")));
     }
 
     @Test

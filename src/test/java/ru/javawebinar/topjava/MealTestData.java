@@ -28,6 +28,43 @@ public class MealTestData {
     public static final Meal adminMeal1 = new Meal(ADMIN_MEAL_ID, of(2020, Month.JANUARY, 31, 14, 0), "Админ ланч", 510);
     public static final Meal adminMeal2 = new Meal(ADMIN_MEAL_ID + 1, of(2020, Month.JANUARY, 31, 21, 0), "Админ ужин", 1500);
 
+    public static final String updatedJsonWithErrorDateTime = """
+                {
+                    "dateTime": "2020-02-01 10:00:00",
+                    "description": "Обновленный завтрак",
+                    "calories": 200
+                }""";
+    public static final String updatedJsonWithErrorEmpty = """
+                {
+                    "dateTime": "",
+                    "description": "",
+                    "calories": ""
+                }""";
+    public static final String updatedJsonWithErrorUnprocessed = """
+                {
+                    "dateTime": "2020-02-01T10:00:00",
+                    "description": "Обновленный завтрак",
+                    "calories":
+                }""";
+    public static final String newJsonWithErrorDateTime = """
+                {
+                    "dateTime": "2020-02-01 18:00:00",
+                    "description": "Созданный ужин",
+                    "calories": 300
+                }""";
+    public static final String newJsonWithErrorEmpty = """
+                {
+                    "dateTime": "",
+                    "description": "",
+                    "calories": ""
+                }""";
+    public static final String newJsonWithErrorUnprocessed = """
+                {
+                    "dateTime": "2020-02-01T18:00:00",
+                    "description": "Созданный ужин",
+                    "calories":
+                }""";
+
     public static final List<Meal> meals = List.of(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
 
     public static Meal getNew() {
