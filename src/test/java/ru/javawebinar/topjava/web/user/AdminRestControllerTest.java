@@ -189,6 +189,21 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void createWithDuplicateEmail() throws Exception {
+        User newDuplicateUser = new User(user);
+        newDuplicateUser.setId(null);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newDuplicateUser, "newPass")))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("http://localhost/rest/admin/users/")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("[email] User with this email already exists")));
+    }
+
+    @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
                 .with(userHttpBasic(admin)))

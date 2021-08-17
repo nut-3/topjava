@@ -134,14 +134,14 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void createWithLocationError() throws Exception {
+    void createWithError() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(newJsonWithErrorDateTime))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-        .andExpect(content().string(containsString("Text '2020-02-01 18:00:00' could not be parsed at index 10")))
+                .andExpect(content().string(containsString("Text '2020-02-01 18:00:00' could not be parsed at index 10")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/profile/meals/")));
 
@@ -165,6 +165,19 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("Unexpected character ('}'")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile/meals/")));
+    }
+
+    @Test
+    void createWithDuplicateDateTime() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(meal1)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("[dateTime] Meal with such dateTime already exists")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/profile/meals/")));
     }

@@ -15,14 +15,6 @@ import java.util.List;
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUIController extends AbstractUserController {
 
-//    @Autowired
-//    private UserToValidator userToValidator;
-//
-//    @InitBinder
-//    private void initBinder(WebDataBinder binder) {
-//        binder.setValidator(userToValidator);
-//    }
-
     @Override
     @GetMapping
     public List<User> getAll() {

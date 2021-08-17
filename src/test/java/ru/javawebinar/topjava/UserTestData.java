@@ -76,6 +76,24 @@ public class UserTestData {
                     "USER"
                 ]
             }""";
+    public static final String registerJsonWithErrorEmpty = """
+            {
+                "name": "",
+                "email": "",
+                "password": ""
+            }""";
+    public static final String registerJsonWithErrorUnprocessed = """
+            {
+                "name": "New2",
+                "email": "new2@yandex.ru",
+                "password":
+            }""";
+    public static final String registerJsonWithErrorEmail = """
+            {
+                "name": "New2",
+                "email": "new2_yandex.ru",
+                "password": "passwordNew"
+            }""";
 
     static {
         user.setMeals(meals);

@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.util.UserUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,6 +66,40 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void registerWithError() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(registerJsonWithErrorEmpty))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("[name] size must be between 2 and 100")))
+                .andExpect(content().string(containsString("[password] must not be blank")))
+                .andExpect(content().string(containsString("[password] length must be between 5 and 32 characters")))
+                .andExpect(content().string(containsString("[email] must not be blank")))
+                .andExpect(content().string(containsString("[name] must not be blank")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile")));
+
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(registerJsonWithErrorUnprocessed))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("Unexpected character ('}'")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile")));
+
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(registerJsonWithErrorEmail))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("[email] must be a well-formed email address")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("http://localhost/rest/profile")));
+    }
+
+    @Test
     void update() throws Exception {
         UserTo updatedTo = new UserTo(null, "newName", "newemail@ya.ru", "newPassword", 1500);
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
@@ -74,6 +109,22 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         MATCHER.assertMatch(userService.get(USER_ID), UserUtil.updateFromTo(new User(user), updatedTo));
+    }
+
+    @Test
+    void updateWithDuplicateEmail() throws Exception {
+        UserTo updatedTo = new UserTo(null, "newName", "admin@gmail.com", "newPassword", 1500);
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString("http://localhost/rest/profile")))
+                .andExpect(content().string(containsString("VALIDATION_ERROR")))
+                .andExpect(content().string(containsString("[email] User with this email already exists")));
+
+        MATCHER.assertMatch(userService.get(USER_ID), user);
+        MATCHER.assertMatch(userService.get(ADMIN_ID), admin);
     }
 
     @Test
