@@ -66,7 +66,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void registerWithError() throws Exception {
+    void registerWithEmptyFields() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(registerJsonWithErrorEmpty))
@@ -79,7 +79,10 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().string(containsString("[name] must not be blank")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/profile")));
+    }
 
+    @Test
+    void registerWithInvalidJson() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(registerJsonWithErrorUnprocessed))
@@ -88,7 +91,10 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().string(containsString("Unexpected character ('}'")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/profile")));
+    }
 
+    @Test
+    void registerWithInvalidEmail() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(registerJsonWithErrorEmail))
@@ -102,6 +108,18 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     @Test
     void update() throws Exception {
         UserTo updatedTo = new UserTo(null, "newName", "newemail@ya.ru", "newPassword", 1500);
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        MATCHER.assertMatch(userService.get(USER_ID), UserUtil.updateFromTo(new User(user), updatedTo));
+    }
+
+    @Test
+    void updateWithSameEmail() throws Exception {
+        UserTo updatedTo = new UserTo(null, "newName", user.getEmail(), "newPassword", 1500);
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updatedTo)))

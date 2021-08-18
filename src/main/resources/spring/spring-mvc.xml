@@ -75,5 +75,7 @@
     </mvc:interceptors>
 
     <!-- validators -->
-    <bean class="ru.javawebinar.topjava.web.validator.InputValidator" id="userInputValidator"/>
+    <bean class="ru.javawebinar.topjava.web.validator.AdminUserInputValidator"/>
+    <bean class="ru.javawebinar.topjava.web.validator.ProfileUserInputValidator"/>
+    <bean class="ru.javawebinar.topjava.web.validator.MealInputValidator"/>
 </beans>

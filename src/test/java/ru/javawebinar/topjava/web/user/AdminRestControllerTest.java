@@ -97,11 +97,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateWithError() throws Exception {
+    void updateWithErrorEmpty() throws Exception {
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
-                .content(updatedJsonWithErrorEmpty))
+                .content(jsonWithErrorEmpty))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("[name] size must be between 2 and 100")))
@@ -112,20 +112,30 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/admin/users/100000")));
 
+        MATCHER.assertMatch(userService.get(USER_ID), user);
+    }
+
+    @Test
+    void updateWithErrorInvalid() throws Exception {
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
-                .content(updatedJsonWithErrorUnprocessed))
+                .content(updatedJsonWithErrorInvalid))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("Unexpected character ('}'")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/admin/users/100000")));
 
+        MATCHER.assertMatch(userService.get(USER_ID), user);
+    }
+
+    @Test
+    void updateWithErrorInvalidEmail() throws Exception {
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
-                .content(updatedJsonWithErrorEmail))
+                .content(updatedJsonWithErrorInvalidEmail))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("[email] must be a well-formed email address")))
@@ -152,11 +162,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void createWithError() throws Exception {
+    void createWithErrorEmpty() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
-                .content(newJsonWithErrorEmpty))
+                .content(jsonWithErrorEmpty))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("[name] size must be between 2 and 100")))
@@ -166,21 +176,27 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().string(containsString("[name] must not be blank")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/admin/users/")));
+    }
 
+    @Test
+    void createWithErrorInvalid() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
-                .content(newJsonWithErrorUnprocessed))
+                .content(newJsonWithErrorInvalid))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("Unexpected character ('}'")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/admin/users/")));
+    }
 
+    @Test
+    void createWithErrorInvalidEmail() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
-                .content(newJsonWithErrorEmail))
+                .content(newJsonWithErrorInvalidEmail))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("[email] must be a well-formed email address")))

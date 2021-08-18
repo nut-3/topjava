@@ -54,6 +54,11 @@ public class UserService implements UserDetailsService {
         return checkNotFound(repository.getByEmail(email), "email=" + email);
     }
 
+    public User getByEmailNullable(String email) {
+        Assert.notNull(email, "email must not be null");
+        return repository.getByEmail(email);
+    }
+
     @Cacheable("users")
     public List<User> getAll() {
         return repository.getAll();

@@ -82,20 +82,24 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void updateWithError() throws Exception {
+    void updateWithErrorDateTimeFormat() throws Exception {
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
-                .content(updatedJsonWithErrorDateTime))
+                .content(jsonWithErrorDateTimeFormat))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("Text '2020-02-01 10:00:00' could not be parsed at index 10")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/profile/meals/100002")));
 
+        MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), meal1);
+    }
 
+    @Test
+    void updateWithErrorEmptyFields() throws Exception {
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
-                .content(updatedJsonWithErrorEmpty))
+                .content(jsonWithErrorEmptyFields))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("[description] must not be blank")))
@@ -105,10 +109,14 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/profile/meals/100002")));
 
+        MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), meal1);
+    }
 
+    @Test
+    void updateWithErrorInvalid() throws Exception {
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
-                .content(updatedJsonWithErrorUnprocessed))
+                .content(jsonWithErrorInvalid))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("Unexpected character ('}'")))
@@ -134,21 +142,24 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void createWithError() throws Exception {
+    void createWithErrorDateTimeFormat() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
-                .content(newJsonWithErrorDateTime))
+                .content(jsonWithErrorDateTimeFormat))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString("Text '2020-02-01 18:00:00' could not be parsed at index 10")))
+                .andExpect(content().string(containsString("Text '2020-02-01 10:00:00' could not be parsed at index 10")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/profile/meals/")));
+    }
 
+    @Test
+    void createWithErrorEmptyFields() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
-                .content(newJsonWithErrorEmpty))
+                .content(jsonWithErrorEmptyFields))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("[description] must not be blank")))
@@ -157,11 +168,14 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().string(containsString("[dateTime] must not be null")))
                 .andExpect(content().string(containsString("VALIDATION_ERROR")))
                 .andExpect(content().string(containsString("http://localhost/rest/profile/meals/")));
+    }
 
+    @Test
+    void createWithErrorInvalid() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
-                .content(newJsonWithErrorUnprocessed))
+                .content(jsonWithErrorInvalid))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("Unexpected character ('}'")))
@@ -171,10 +185,11 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithDuplicateDateTime() throws Exception {
+        Meal newMeal = new Meal(null, meal1.getDateTime(), meal1.getDescription(), meal1.getCalories());
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
-                .content(JsonUtil.writeValue(meal1)))
+                .content(JsonUtil.writeValue(newMeal)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("[dateTime] Meal with such dateTime already exists")))
